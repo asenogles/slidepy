@@ -1,6 +1,5 @@
 #include <omp.h>
 #include <immintrin.h>
-#include "com.h"
 
 #define SSE_WIDTH 4
 #define AVX_WIDTH 8

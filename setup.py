@@ -49,12 +49,12 @@ with open('README.md', mode = 'rb') as readme_file:
 setup(
     name = 'slidepy',
     version='0.0.1',
-    description='Fast multi-threaded 3D landslide modelling',
+    description='Fast multi-threaded 3D landslide modelling with SIMD support',
     long_description=readme,
     long_description_content_type='text/markdown',
     url='https://github.com/asenogles/slidepy',
     author='asenogles',
-    #license='',
+    license='LGPL v3',
     packages=find_packages(),
     install_requires=[
         'cython>=0.29.21',

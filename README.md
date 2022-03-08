@@ -1,5 +1,9 @@
 # slidePy
 
+[![pypi](https://img.shields.io/pypi/v/slidepy.svg)](https://pypi.python.org/pypi/slidepy)
+[![image](https://img.shields.io/badge/dynamic/json?query=info.requires_python&label=python&url=https%3A%2F%2Fpypi.org%2Fpypi%2Fslidepy%2Fjson )](https://pypi.python.org/pypi/slidepy)
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-yellow.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+
 ***slidepy*** is a fast multi-threaded python library for performing 3D landslide simulation and modelling using [openMP](https://www.openmp.org/), [SIMD](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) and [numpy](https://numpy.org/) objects.
 
  - Github repository: https://github.com/asenogles/slidepy
