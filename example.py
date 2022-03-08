@@ -1,35 +1,3 @@
-# slidePy
-
-***slidepy*** is a fast multi-threaded python library for performing 3D landslide simulation and modelling using [openMP](https://www.openmp.org/), [SIMD](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) and [numpy](https://numpy.org/) objects.
-
- - Github repository: https://github.com/asenogles/slidepy
-  - PyPI: https://pypi.org/project/slidepy
-
-## Motivation
-
-***slidepy*** was developed to quickly perform landslide simulations, enabling self-supervised learning for landslide analyses. ***slidepy*** provides a cython wrapper for optimized [openMP](https://www.openmp.org/) *c* code with addtional [SIMD](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) support for SSE & AVX instruction sets using [Intrinsics](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html). Data objects are handled by [numpy](https://numpy.org/) allowing for straightforward memory management. Currently only conservation of mass modelling has been fully implemented, however this is open to expansion in the future. All code is still in development and thus it is recommended to test fully before use.
-
-## Installation
-
-***slidepy*** has currently been tested on Linux and Microsoft windows operating systems. You will need python>=3.6 installed. If running ***slidepy*** on non-x86 architecture, you will need to modify the SIMD code in order to compile. It is recommended to install ***slidepy*** within a virtual environment.
-### Install using pip
-
-To install ***slidepy*** from PyPI using pip:
-
-```console
-pip install slidepy
-```
-### Install from source
-
-To build ***slidepy*** from source, download this repository and run:
-```console
-python3 setup.py build_ext --inplace
-```
-**Note**: You will need to have the required build dependencies installed.
-
-## Example
-
-```python
 import timeit
 import numpy as np
 import fasterraster as fr
@@ -79,7 +47,7 @@ def np_com(dem, u, v, ssem, cell_size, epochs):
     h = dem_cpy - ssem
 
     # calculate vel gradients
-    du = np.gradient(u, axis=1) / cell_size
+    du = -1 * np.gradient(u, axis=1) / cell_size
     dv = np.gradient(v, axis=1) / cell_size
 
     for i in range(epochs):
@@ -107,27 +75,12 @@ print(f'python COM took {time:.3f} seconds')
 time = timeit.timeit(lambda: np_com(dem.raster, u, v, ssem.raster, dem.XDIM, 1), number=1)
 print(f'numpy COM took {time:.3f} seconds')
 
-# Time Conservation of mass simulation using open-MP for numt-threads
+# Time Conservation of mass simulation using open-MP and SIMD for numt-threads
 num_threads = [1,2,4,8]
 for numt in num_threads:
     time = timeit.timeit(lambda: sp.com_mp(dem.raster, u, v, ssem.raster, dem.XDIM, 1, numt), number=NTESTS)
     print(f'MP COM averaged {time/NTESTS:.3f} seconds')
 
-# Time Conservation of mass simulation using open-MP and SIMD for numt-threads
 for numt in num_threads:
     time = timeit.timeit(lambda: sp.com_sse(dem.raster, u, v, ssem.raster, dem.XDIM, 1, numt), number=NTESTS)
     print(f'SSE COM averaged {time/NTESTS:.3f} seconds')
-```
-Example output:
-```console
-python COM took 162.632 seconds
-numpy COM took 7.911 seconds
-MP COM averaged 0.095 seconds
-MP COM averaged 0.092 seconds
-MP COM averaged 0.091 seconds
-MP COM averaged 0.088 seconds
-SSE COM averaged 0.048 seconds
-SSE COM averaged 0.033 seconds
-SSE COM averaged 0.028 seconds
-SSE COM averaged 0.030 seconds
-```

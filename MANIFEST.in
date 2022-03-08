@@ -1,0 +1,6 @@
+include LICENSE
+include README.md
+
+graft slidepy/augment/
+graft slidepy/com/
+graft slidepy/mp_math/
