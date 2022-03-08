@@ -1,5 +1,11 @@
-"""
-A collection of functions for landslide simulation and modelling
+"""Collection of functions for landslide simulation and modelling
+
+Module for calling c/Cython functions that can be used for 3D landslide
+simulation and modelling, including: 
+    * generating finite grids
+    * augmenting finite grids
+    * running landslide simulations
+
 """
 
 import numpy as np
@@ -12,7 +18,8 @@ def init_random(init):
     """Initialize the random number generator
 
     Args:
-        init (uint): seed used to initialize the random number generator
+        init (unsigned int): seed used to initialize the random number generator
+
     """
     cy_init_random(init)
 
@@ -20,12 +27,13 @@ def augment_mask(mask, scale):
     """Augment a binary mask representing a landslide boundary
 
     Args:
-        mask (2D array): 2D numpy binary grid to augment
+        mask (ndarray): 2D array containing binary values where 1==landslide, 0==non-landslide with `np.uint8` type
         scale (float): scale to scale binary grid by
         method (str): 'edge', 'centroid'
 
     Returns:
         (2D array): Augmented version of input
+        ndarray: 2D array containing augmented mask
     """
 
     # TODO: Implement in c
@@ -98,18 +106,18 @@ def interp_slip(dem, ctrl, mask, pct_c=0.05, num_k=20, min_offset=5):
     and landslide boundary
 
     Args:
-        dem (2D array): Grid of surface elevation values
-        ctrl (2D array): Grid of slip surface control pts with slip surface elevation values
-        mask (2D array): Gird of landside extents, 1 = landside, 0=no landslide
+        dem (ndarray): 2D array containing DEM of landslide terrain with `np.float32` type
+        ctrl (ndarray): 2D array containing slip surface control pts with `np.float32` type
+        mask (ndarray): 2D array containing binary values where 1==landslide, 0==non-landslide with `np.uint8` type
         pct_c (int, optional): fraction of ctrl pts to use in Spline, Defaults to 0.2.
         num_k (int, optional): number of knot pts in Spline. Defaults to 20.
         min_offset (int, optional): num pixel offset from side for spline fitting. Defaults to 5.
 
     Raises:
-        ValueError: if dem, ctrl & mask do not match
+        ValueError: if dem, ctrl & mask shape do not match
 
     Returns:
-        2D array: grid of interpolated slip surface elevations
+        ndarray: 2D array containing interpolated Slip Surface Elevations
     """
 
     # TODO: Implement in c
@@ -159,13 +167,13 @@ def generate_slip(mask, dem, ssem, slip_area):
     """Generates slip surface over mask based off large slip surface
 
     Args:
-        mask (2D array): Binary array where 1==landslide, 0==non-landslide
-        dem (2D array): Digital elevation model of terrain
-        ssem (2D array): Digital elevation model of slip surface
+        mask (ndarray): 2D array containing binary values where 1==landslide, 0==non-landslide with `np.uint8` type
+        dem (ndarray): 2D array containing DEM of landslide terrain with `np.float32` type
+        ssem (ndarray): 2D array containing Slip Surface Elevation Model of landslide with `np.float32` type
         slip_area (float): Ratio of slip area to use as control
 
     Returns:
-        2D array: Digital elevation model of new slip surface
+        ndarray: 2D array containing new Slip Surface Elevation Model (SSEM)
     """
 
     # TODO: Implement in c
@@ -178,13 +186,13 @@ def augment_slip(dem, ssem, scale, numt=1):
     """augment the slip surface using a depth scaler
 
     Args:
-        dem (2D array): Digital elevation model of terrain
-        ssem (2D array): Digital elevation model of slip surface to augment
+        dem (ndarray): 2D array containing DEM of landslide terrain with `np.float32` type
+        ssem (ndarray): 2D array containing Slip Surface Elevation Model of landslide with `np.float32` type
         scale (float): Scale used to augment depth
         numt (int): Number of threads to use for openMP operations
 
     Returns:
-        2D array: Digital elevation model of augmented slip surface
+        ndarray: 2D array containing augmented Slip Surface Elevation Model (SSEM)
     """
 
     # TODO: Implement in c
@@ -194,10 +202,11 @@ def augment_slip(dem, ssem, scale, numt=1):
 
 def generate_vel(vel, min, max, nrow_vals=3, ncol_vals=3, numt=1):
     """ Generates velocity raster in place using random spline process between min & max.
+    
     Wrapper function for cy_generate_vel
 
     Args:
-        vel (3D array): empty array to store velocity grid (NUM VELS x NROWS X NCOLS)
+        vel (ndarray): 3D empty array to store velocity grid values (NUM VELS x NROWS X NCOLS)
         min (float): minimum possible velocity value
         max (float): maximum possible velocity value
         nrow_vals (int, optional): number of ctrl pts to use in row-axis, defaults to 3
@@ -219,12 +228,12 @@ def calc_depth_mp(dem, ssem, numt=1):
     """ Calculate the depth across a lanslide
 
     Args:
-        dem (2D array): Digital Elevation Model of landslide terrain
-        ssem (2D array): Slip Surface Elevation Model of landslide
+        dem (ndarray): 2D array containing DEM of landslide terrain with `np.float32` type
+        ssem (ndarray): 2D array containing Slip Surface Elevation Model of landslide with `np.float32` type
         numt (int, optional): number of threads to use for openMP operations, defaults to 1
     
     Returns:
-        (2D array): landslide depth grid
+        ndarray: 2D array containing landslide depth
 
     """
     assert (dem.shape == ssem.shape and len(dem.shape) == 2)
@@ -238,16 +247,16 @@ def com_mp(dem, u, v, ssem, cell_size, epochs=1, numt=1):
     """ Compute a conservation of mass simulation across the landslide using openMP
 
     Args:
-        dem (2D array): Digital Elevation Model of landslide terrain
-        u (2D array): x-component of landslide velocity (units/epoch)
-        v (2D array): y-component of landslide velocity (units/epoch)
-        ssem (2D array): Slip Surface Elevation Model of landslide
+        dem (ndarray): 2D array containing DEM of landslide terrain with `np.float32` type
+        u (ndarray): 2D array containing x-component of landslide velocity (units/epoch) with `np.float32` type
+        v (ndarray): 2D array containing y-component of landslide velocity (units/epoch) with `np.float32` type
+        ssem (ndarray): 2D array containing Slip Surface Elevation Model of landslide with `np.float32` type
         cell_size (float): cellsize of the rasters
         epochs (int, optional): number of simulation epochs to compute, defaults to 1
         numt (int, optional): number of threads to use for openMP operations, defaults to 1
     
     Returns:
-        (2D array): DEM of the post simulation landslide
+        ndarray: 2D array containing DEM of the post simulation landslide
 
     """
     assert (dem.shape == u.shape == v.shape == ssem.shape and len(dem.shape) == 2)
@@ -259,16 +268,16 @@ def com_sse(dem, u, v, ssem, cell_size, epochs=1, numt=1):
     """ Compute a conservation of mass simulation across the landslide using openMP and SIMD
 
     Args:
-        dem (2D array): Digital Elevation Model of landslide terrain
-        u (2D array): x-component of landslide velocity (units/epoch)
-        v (2D array): y-component of landslide velocity (units/epoch)
-        ssem (2D array): Slip Surface Elevation Model of landslide
+        dem (ndarray): 2D array containing DEM of landslide terrain with `np.float32` type
+        u (ndarray): 2D array containing x-component of landslide velocity (units/epoch) with `np.float32` type
+        v (ndarray): 2D array containing y-component of landslide velocity (units/epoch) with `np.float32` type
+        ssem (ndarray): 2D array containing Slip Surface Elevation Model of landslide with `np.float32` type
         cell_size (float): cellsize of the rasters
         epochs (int, optional): number of simulation epochs to compute, defaults to 1
         numt (int, optional): number of threads to use for openMP operations, defaults to 1
     
     Returns:
-        (2D array): DEM of the post simulation landslide
+        ndarray: 2D array containing DEM of the post simulation landslide
 
     """
     dem_cpy = dem.copy()
@@ -280,16 +289,16 @@ def com_avx(dem, u, v, ssem, cell_size, epochs=1, numt=1):
     """ Compute a conservation of mass simulation across the landslide using openMP and AVX
 
     Args:
-        dem (2D array): Digital Elevation Model of landslide terrain
-        u (2D array): x-component of landslide velocity (units/epoch)
-        v (2D array): y-component of landslide velocity (units/epoch)
-        ssem (2D array): Slip Surface Elevation Model of landslide
+        dem (ndarray): 2D array containing DEM of landslide terrain with `np.float32` type
+        u (ndarray): 2D array containing x-component of landslide velocity (units/epoch) with `np.float32` type
+        v (ndarray): 2D array containing y-component of landslide velocity (units/epoch) with `np.float32` type
+        ssem (ndarray): 2D array containing Slip Surface Elevation Model of landslide with `np.float32` type
         cell_size (float): cellsize of the rasters
         epochs (int, optional): number of simulation epochs to compute, defaults to 1
         numt (int, optional): number of threads to use for openMP operations, defaults to 1
     
     Returns:
-        (2D array): DEM of the post simulation landslide
+        ndarray: 2D array containing DEM of the post simulation landslide
 
     """
     assert (dem.shape == u.shape == v.shape == ssem.shape and len(dem.shape) == 2)
@@ -301,16 +310,16 @@ def com_sse_multi(dem, u, v, ssem, cell_size, epochs=1, numt=1):
     """ Compute a conservation of mass simulation across the landslide using openMP and SIMD
 
     Args:
-        dem (2D array): Digital Elevation Model of landslide terrain
-        u (2D array): x-component of landslide velocity (units/epoch)
-        v (2D array): y-component of landslide velocity (units/epoch)
-        ssem (2D array): Slip Surface Elevation Model of landslide
+        dem (ndarray): 2D array containing Digital Elevation Model of landslide terrain with `np.float32` type
+        u (ndarray): 2D array containing x-component of landslide velocity (units/epoch) with `np.float32` type
+        v (ndarray): 2D array containing y-component of landslide velocity (units/epoch) with `np.float32` type
+        ssem (ndarray): 2D array containing Slip Surface Elevation Model of landslide with `np.float32` type
         cell_size (float): cellsize of the rasters
         epochs (int, optional): number of simulation epochs to compute, defaults to 1
         numt (int, optional): number of threads to use for openMP operations, defaults to 1
     
     Returns:
-        (3D array): (NxNROWSxNCOLS) DEM of the post simulation landslide, each band contains the DEM at sim epoch N
+        ndarray: 3D (NxNROWSxNCOLS) DEM of the post simulation landslide, each band contains the DEM at sim epoch N
 
     """
     assert (dem.shape == u.shape == v.shape == ssem.shape and len(dem.shape) == 2)
