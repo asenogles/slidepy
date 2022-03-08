@@ -4,14 +4,14 @@
 [![image](https://img.shields.io/badge/dynamic/json?query=info.requires_python&label=python&url=https%3A%2F%2Fpypi.org%2Fpypi%2Fslidepy%2Fjson )](https://pypi.python.org/pypi/slidepy)
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL_v3-yellow.svg)](https://www.gnu.org/licenses/lgpl-3.0)
 
-***slidepy*** is a fast multi-threaded python library for performing 3D landslide simulation and modelling using [openMP](https://www.openmp.org/), [SIMD](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) and [numpy](https://numpy.org/) objects.
+***slidepy*** is a fast multi-threaded python library for performing 3D landslide simulation and modeling using [openMP](https://www.openmp.org/), [SIMD](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) and [numpy](https://numpy.org/) objects.
 
  - Github repository: https://github.com/asenogles/slidepy
   - PyPI: https://pypi.org/project/slidepy
 
 ## Motivation
 
-***slidepy*** was developed to quickly perform landslide simulations, enabling self-supervised learning for landslide analyses. ***slidepy*** provides a cython wrapper for optimized [openMP](https://www.openmp.org/) *c* code with addtional [SIMD](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) support for SSE & AVX instruction sets using [Intrinsics](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html). Data objects are handled by [numpy](https://numpy.org/) allowing for straightforward memory management. Currently only conservation of mass modelling has been fully implemented, however this is open to expansion in the future. All code is still in development and thus it is recommended to test fully before use.
+***slidepy*** was developed to quickly perform landslide simulations, enabling self-supervised learning for landslide analyses. ***slidepy*** provides a cython wrapper for optimized [openMP](https://www.openmp.org/) *c* code with additional [SIMD](https://en.wikipedia.org/wiki/Single_instruction,_multiple_data) support for SSE & AVX instruction sets using [Intrinsics](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html). Data objects are handled by [numpy](https://numpy.org/) allowing for straightforward memory management. Currently only conservation of mass modeling has been fully implemented, however this is open to expansion in the future. All code is still in development and thus it is recommended to test fully before use.
 
 ## Installation
 
