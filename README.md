@@ -115,23 +115,23 @@ print(f'numpy COM took {time:.3f} seconds')
 num_threads = [1,2,4,8]
 for numt in num_threads:
     time = timeit.timeit(lambda: sp.com_mp(dem.raster, u, v, ssem.raster, dem.XDIM, 1, numt), number=NTESTS)
-    print(f'MP COM averaged {time/NTESTS:.3f} seconds')
+    print(f'MP COM averaged {time/NTESTS:.3f} seconds for {numt} threads')
 
 # Time Conservation of mass simulation using open-MP and SIMD for numt-threads
 for numt in num_threads:
     time = timeit.timeit(lambda: sp.com_sse(dem.raster, u, v, ssem.raster, dem.XDIM, 1, numt), number=NTESTS)
-    print(f'SSE COM averaged {time/NTESTS:.3f} seconds')
+    print(f'SSE COM averaged {time/NTESTS:.3f} seconds for {numt} threads')
 ```
 Example output:
 ```console
 python COM took 162.632 seconds
 numpy COM took 7.911 seconds
-MP COM averaged 0.095 seconds
-MP COM averaged 0.092 seconds
-MP COM averaged 0.091 seconds
-MP COM averaged 0.088 seconds
-SSE COM averaged 0.048 seconds
-SSE COM averaged 0.033 seconds
-SSE COM averaged 0.028 seconds
-SSE COM averaged 0.030 seconds
+MP COM averaged 0.095 seconds for 1 threads
+MP COM averaged 0.092 seconds for 2 threads
+MP COM averaged 0.091 seconds for 4 threads
+MP COM averaged 0.088 seconds for 8 threads
+SSE COM averaged 0.048 seconds for 1 threads
+SSE COM averaged 0.033 seconds for 2 threads
+SSE COM averaged 0.028 seconds for 4 threads
+SSE COM averaged 0.030 seconds for 8 threads
 ```

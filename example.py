@@ -79,8 +79,8 @@ print(f'numpy COM took {time:.3f} seconds')
 num_threads = [1,2,4,8]
 for numt in num_threads:
     time = timeit.timeit(lambda: sp.com_mp(dem.raster, u, v, ssem.raster, dem.XDIM, 1, numt), number=NTESTS)
-    print(f'MP COM averaged {time/NTESTS:.3f} seconds')
+    print(f'MP COM averaged {time/NTESTS:.3f} seconds for {numt} threads')
 
 for numt in num_threads:
     time = timeit.timeit(lambda: sp.com_sse(dem.raster, u, v, ssem.raster, dem.XDIM, 1, numt), number=NTESTS)
-    print(f'SSE COM averaged {time/NTESTS:.3f} seconds')
+    print(f'SSE COM averaged {time/NTESTS:.3f} seconds for {numt} threads')
