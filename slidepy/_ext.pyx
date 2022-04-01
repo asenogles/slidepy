@@ -82,7 +82,7 @@ cdef extern from "com/com.h":
     void COM_SSE_MULTI(float *dem, float *h, const float *u, const float *v, const float *slip, const float dl, const int epochs, const int NROWS, const int NCOLS, const int row_stride, const int col_stride, const int NUMT)
 
 def cy_calc_depth(float[:,::1] h, const float[:,::1] dem, const float[:,::1] slip, const int numt=1):
-    cdef int size = h.size()
+    cdef int size = h.size
     COMPUTE_DEPTH_MP(&h[0,0], &dem[0,0], &slip[0,0], size, numt)
 
 def cy_com_mp(float[:,::1] dem, const float[:,::1] u, const float[:,::1] v, const float[:,::1] slip, const float dl, const int epochs, const int numt=1):

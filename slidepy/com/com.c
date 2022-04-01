@@ -22,12 +22,12 @@ void COM_MP(float *dem, float *h, const float *u, const float *v, const float *s
         int r;
         // compute new dem elevation
         #pragma omp parallel for default(none) shared(NROWS, NCOLS, row_stride, col_stride, dl, h, dem, u, v, slip)
-        for (r = 1; r < NROWS; r++)
+        for (r = 0; r < NROWS; r++)
         {
             int i = r * row_stride;
             int ip = (r+1) * row_stride;
             int im = (r-1) * row_stride;
-            for (int c = 1; c < NCOLS; c++)
+            for (int c = 0; c < NCOLS; c++)
             {
                 int j = c * col_stride;
                 int jp = (c+1) * col_stride;
@@ -37,10 +37,10 @@ void COM_MP(float *dem, float *h, const float *u, const float *v, const float *s
         }
         // update landslide depth
         #pragma omp parallel for default(none) shared(NROWS, NCOLS, row_stride, col_stride, h, dem, slip)
-        for (r = 1; r < NROWS; r++)
+        for (r = 0; r < NROWS; r++)
         {
             int i = r * row_stride;
-            for (int c = 1; c < NCOLS; c++)
+            for (int c = 0; c < NCOLS; c++)
             {
                 int j = c * col_stride;
                 h[i+j] = dem[i+j] - slip[i+j];
