@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+- family-names: "Senogles"
+  given-names: "Andrew"
+  orcid: "https://orcid.org/0000-0002-6607-2934"
+title: "slidepy: A fast multi-threaded python library for 3D landslide modeling with SIMD support"
+version: 0.0.1
+doi: 10.5281/zenodo.6350744
+date-released: 2022-03-13
+url: "https://github.com/asenogles/slidepy"
